@@ -1,8 +1,9 @@
 import tkinter as tk
-from tkinter import *
-from tkinter import ttk
 from tkinter import messagebox
 from tkcalendar import DateEntry
+from tkinter import *
+import pandas as pd
+from tkinter import ttk
 
 def submit():
     if not name_entry.get() or not dob_entry.get() or not email_entry.get() or not contact_entry.get() or var.get() == 0 or var1.get() == "":
@@ -10,43 +11,17 @@ def submit():
     else:
         messagebox.showinfo("Success", "Your information has been submitted successfully.")
 
+        # Writing data to an excel sheet
+        df = pd.DataFrame({
+            'Name': [name_entry.get()],
+            'Date of Birth': [dob_entry.get()],
+            'Email': [email_entry.get()],
+            'Contact Number': [contact_entry.get()],
+            'Gender': [var.get()],
+            'Course': [var1.get()]
+        })
 
-root = Tk()
-root.title("Registration Form")
-root.geometry("540x640")
-root.resizable(True, True)
-
-Label(root, text="College Registration Form", font="Garamond 28", fg="blue", bg="light pink").pack(pady=20)
-
-# Labels and Entries
-tk.Label(root, text="Full Name", font=(15),fg="green").place(x=50, y=100)
-name_entry = tk.Entry(root, width=25, font=18,bg="grey",border=5)
-name_entry.place(x=200, y=100)
-
-Label(root, text="Date of Birth", font=("Arial", 15)).place(x=50, y=180)
-dob_entry = DateEntry(root, width=15, bd=1.5, font=13)
-dob_entry.place(x=200, y=180)
-
-Label(root, text="Email", font=("Arial", 15)).place(x=50, y=220)
-email_entry = Entry(root, width=25, bd=1.5, font=18)
-email_entry.place(x=200, y=220)
-
-Label(root, text="Contact Number", font=("Arial", 15)).place(x=50, y=280)
-contact_entry = Entry(root, width=25, bd=1.5, font=18)
-contact_entry.place(x=200, y=280)
-
-Label(root, text="Gender", font=("Arial", 15),fg="grey").place(x=50, y=350)
-var = StringVar()
-var.set(0)
-Radiobutton(root, text="Male", font="15",value="male", variable=var).place(x=200, y=350)
-Radiobutton(root, text="Female", font="15",value="female", variable=var).place(x=280, y=350)
-Radiobutton(root, text="None", font="15", variable=var).place(x=380, y=350)
-
-Label(root, text="Select a Course", font=("Arial", 15)).place(x=50, y=420)
-var1 = StringVar()
-ttk.Combobox(root, values=("CSE", "IT", "EE", "ECE"), textvariable=var1, font=15).place(x=200, y=420)
-
-Button(root, text = 'Submit',cursor="hand2", fg = 'black', bg = 'yellow',font = (("Times New Roman"),15),command=submit).place(x=200, y=500)
+        df.to_excel('college_registration.xlsx', index=False)
 
 def clear():
     name_entry.delete(0, END)
@@ -55,6 +30,44 @@ def clear():
     contact_entry.delete(0, END)
     var.set("")
     var1.set("")
+
+root = tk.Tk()
+root.title("Registration Form")
+root.geometry("540x640")
+root.resizable(True, True)
+
+tk.Label(root, text="College Registration Form", font="Garamond 28", fg="blue", bg="light pink").pack(pady=30)
+
+# Labels and Entries
+tk.Label(root, text="Full Name", font=(15),fg="green").place(x=50, y=100)
+name_entry = tk.Entry(root, width=25, font=18,bg="grey",fg="blue")
+name_entry.place(x=200, y=100)
+
+tk.Label(root, text="Date of Birth", font=(15),fg="green").place(x=50, y=160)
+dob_entry = DateEntry(root, width=25, font=18, bg="grey", fg="blue")
+dob_entry.place(x=200, y=160)
+
+tk.Label(root, text="Email", font=(15),fg="green").place(x=50, y=220)
+email_entry = tk.Entry(root, width=25, font=18, bg="grey", fg="blue")
+email_entry.place(x=200, y=220)
+
+tk.Label(root, text="Contact Number", font=(15),fg="green").place(x=50, y=280)
+contact_entry = tk.Entry(root, width=25, font=18, bg="grey", fg="blue")
+contact_entry.place(x=200, y=280)
+
+tk.Label(root, text="Gender", font=(15),fg="green").place(x=50, y=350)
+var = tk.StringVar()
+var.set("")
+tk.Radiobutton(root, text="Male", font="15",value="male", variable=var).place(x=200, y=350)
+tk.Radiobutton(root, text="Female", font="15",value="female", variable=var).place(x=280, y=350)
+tk.Radiobutton(root, text="None", font="15", variable=var).place(x=380, y=350)
+
+tk.Label(root, text="Select a Course", font=(15),fg="green").place(x=50, y=420)
+var1 = tk.StringVar()
+ttk.Combobox(root, values=("CSE", "IT", "ECE", "EE"), width=25, textvariable=var1).place(x=200, y=420)
+
+# Buttons
+Button(root, text = 'Submit',cursor="hand2", fg = 'black', bg = 'yellow',font = (("Times New Roman"),15),command=submit).place(x=200, y=500)
 
 Button(root, text = 'Clear',cursor="hand2", fg = 'white', bg = 'red',font = (("Times New Roman"),15), command=clear).place(x=300, y=500)
 
