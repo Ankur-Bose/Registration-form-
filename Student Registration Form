@@ -1,0 +1,116 @@
+from tkinter import *
+from PIL import Image,ImageTk, ImageFilter
+from tkinter import ttk
+from tkinter import messagebox
+import pymysql
+class Register:
+    def __init__(self,root):
+        self.root=root
+        self.root.title("Registration Window")
+        self.root.geometry("1350x700+0+0")    #geometry in the format widthxheight+start+end
+        self.root.config(bg="#DBDAD9")
+
+        #===Bg Image===
+        self.bg=Image.open("images_project\\bg1.jpg")
+        self.bg = self.bg.resize((1900, 1050))
+        self.bg=self.bg.filter(ImageFilter.BoxBlur(radius=5))
+        self.bg = ImageTk.PhotoImage(self.bg)
+        bg=Label(self.root,image=self.bg).place(x=250,y=0,relwidth=1,relheight=1)
+
+        #===Left Image===
+        self.left=Image.open("images_project\logo.png")
+        self.left = ImageTk.PhotoImage(self.left)
+        
+        left=Label(self.root,image=self.left).place(x=80,y=100,width=300,height=600)
+
+        #===Registration frame===
+        frame1=Frame(self.root,bg="#DBDAD9")
+        frame1.place(x=380,y=100,width=700,height=600)
+
+        title=Label(frame1, text="Registration Form",font=("times new roman",25,"bold"),bg="#DBDAD9",fg="#195294").place(x=50,y=30)
+
+        #first Name
+        first_name=Label(frame1, text="First Name",font=("times new roman",18,"bold"),bg="#DBDAD9",fg="#686868").place(x=50,y=100)
+        self.text_first_name=Entry(frame1,font=("times new roman",15),bg="#bebebe")
+        self.text_first_name.place(x=50,y=130,width=250)
+
+        #Last Name
+        last_name=Label(frame1, text="Last Name",font=("times new roman",18,"bold"),bg="#DBDAD9",fg="#686868").place(x=370,y=100)
+        self.text_last_name=Entry(frame1,font=("times new roman",15),bg="#bebebe")
+
+        self.text_last_name.place(x=370,y=130,width=250)
+
+        #Contact Number
+        contact=Label(frame1, text="Contact Number",font=("times new roman",18,"bold"),bg="#DBDAD9",fg="#686868").place(x=50,y=170)
+        self.text_contact=Entry(frame1,font=("times new roman",15),bg="#bebebe")
+        self.text_contact.place(x=50,y=200,width=250)
+
+        #Email Address
+        email=Label(frame1, text="Email",font=("times new roman",18,"bold"),bg="#DBDAD9",fg="#686868").place(x=370,y=170)
+        self.text_email=Entry(frame1,font=("times new roman",15),bg="#bebebe")
+        self.text_email.place(x=370,y=200,width=250)
+
+        #Departmant
+        dept=Label(frame1, text="Department",font=("times new roman",18,"bold"),bg="#DBDAD9",fg="#686868").place(x=50,y=240)
+        self.cmb_dept=ttk.Combobox(frame1,font=("times new roman",14),state='readonly',justify=CENTER)
+        self.cmb_dept['values']=("Select your option","CSE","IT", "ECE", "EE")
+        self.cmb_dept.place(x=50,y=270,width=250)
+        self.cmb_dept.current(0)
+
+        #Guardian Name
+        guardian=Label(frame1, text="Guardian Name",font=("times new roman",18,"bold"),bg="#DBDAD9",fg="#686868").place(x=370,y=240)
+        self.text_guardian=Entry(frame1,font=("times new roman",15),bg="#bebebe")
+        self.text_guardian.place(x=370,y=270,width=250)
+
+        #DOB
+        dob=Label(frame1, text="Date of Birth",font=("times new roman",18,"bold"),bg="#DBDAD9",fg="#686868").place(x=50,y=310)
+        self.text_dob=Entry(frame1,text="dd-mm-yy",font=("times new roman",15),bg="#bebebe")
+        self.text_dob.place(x=50,y=340,width=250)
+
+        #12%
+        class12=Label(frame1, text="12th %",font=("times new roman",18,"bold"),bg="#DBDAD9",fg="#686868").place(x=370,y=310)
+        self.text_class12=Entry(frame1,font=("times new roman",15),bg="#bebebe")
+        self.text_class12.place(x=370,y=340,width=250)
+
+        #Address
+        address=Label(frame1, text="Address",font=("times new roman",18,"bold"),bg="#DBDAD9",fg="#686868").place(x=50,y=380)
+        self.text_address=Entry(frame1,font=("times new roman",15),bg="#bebebe")
+        self.text_address.place(x=50,y=410,width=600,height=50)
+
+        #registration button
+        self.btn=ImageTk.PhotoImage(file="images_project\\button.jpeg")
+        btn_register=Button(frame1,image=self.btn,bd=0,cursor="hand2",command=self.register_data).place(x=100,y=480,height=69,width=400)
+
+        #clear
+        # self.btn_clr=Button(frame1,text="CLEAR",bd=0,cursor="hand2", font=("times new roman",10,"bold"),bg="blue",fg="white").place(x=30,y=480,height=60,width=100)
+
+    def register_data(self):
+        if self.text_first_name.get()==""or self.text_contact.get()=="" or self.text_email.get()==""or self.cmb_dept.get()=="Select your option" or self.text_guardian.get()=="" or self.text_dob.get()=="" or self.text_class12.get()=="" or self.text_address.get()=="":
+            messagebox.showerror("Error","All Fields Are Required",parent=self.root)
+        else:
+            try:
+                con=pymysql.connect(host="localhost", user="root",password="", database="student1")
+                cur=con.cursor()
+                # cur.execute("select * from student1 where email=%s",self.text_email)
+                # row=cur.fetchone()
+                # print(row)
+                cur.execute("insert into student (f_name,l_name,contact,email,department,guardian,dob,12_percent,address) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                (self.text_first_name.get(),
+                 self.text_last_name.get(),
+                 self.text_contact.get(),
+                 self.text_email.get(),
+                 self.cmb_dept.get(),
+                 self.text_guardian.get(),
+                 self.text_dob.get(),
+                 self.text_class12.get(),
+                 self.text_address.get()
+                ))
+                con.commit()
+                con.close()
+                messagebox.showinfo("Success","Registration Successfull",parent=self.root) 
+            except Exception as es:
+                messagebox.showerror("Error",f"Error due to :{str(es)}",parent=self.root)
+            
+root=Tk()
+obj=Register(root)
+root.mainloop()
